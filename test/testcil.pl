@@ -572,6 +572,7 @@ addTest("testrun/comparisons");
 addTest("testrun/assign");
 addTest("test/vector_compound_init");
 addTest("test/vector_assign");
+addTest("testrun/preempt-builtin");    
 
 
 
