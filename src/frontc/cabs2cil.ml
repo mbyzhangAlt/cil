@@ -1691,6 +1691,7 @@ let cabsTypeAddAttributes a0 t =
 			    "byte" -> 1
 			  | "word" -> M.sizeOf Int
 			  | "pointer" -> M.sizeOf Ptr
+			  | "unwind_word" -> M.sizeOf Ptr (* FIXME: always ptrsized? *)
 			  | "QI" -> 1
 			  | "HI" -> 2
 			  | "SI" -> 4
