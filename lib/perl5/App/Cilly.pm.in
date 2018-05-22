@@ -296,6 +296,9 @@ sub collectOneArgument {
     if($arg eq "--bytecode") {
         $self->{NATIVECAML} = 0; return 1;
     }
+    if($arg eq "--native") {
+        $self->{NATIVECAML} = 1; return 1;
+    }
     if($arg eq "--no-idashdot") {
         $self->{IDASHDOT} = 0; return 1;
     }
@@ -411,6 +414,11 @@ Options:
   --bytecode         Invoke the bytecode (as opposed to native code) system
   --dynmodel         Dynamically determine the compiler model from macro 
                      definitions.
+  --debug            Like --bytecode, but also enable OCaml backtraces
+  --native           Invoke native code (default unless --debug or --bytecode)
+  --stdoutpp         For MSVC only, use the "preprocess to stdout" mode. This 
+                     is for some versions of MSVC that do not support 
+                     well the /P file
 
 EOF
     $self->helpMessage();
