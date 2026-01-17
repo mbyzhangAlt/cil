@@ -3623,9 +3623,11 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
         let se = se1 @@ se2 in
         let (e1'', t1, e2'', tresult) =
           (* Either e1 or e2 can be the pointer *)
-          match unrollType t1, unrollType t2 with
-            TPtr(t1e,_), (TInt _|TEnum _) -> e1', t1, e2', t1e
-          | (TInt _|TEnum _), TPtr(t2e,_) -> e2', t2, e1', t2e
+          match unrollType t1, unrollType t2, vectorInfo t1, vectorInfo t2 with
+            TPtr(t1e,_), (TInt _|TEnum _), _, _ -> e1', t1, e2', t1e
+          | (TInt _|TEnum _), TPtr(t2e,_), _, _ -> e2', t2, e1', t2e
+          | _, (TInt _|TEnum _), Some(t1e, _, _), _ -> e1', t1, e2', t1e
+          | (TInt _|TEnum _), _, _, Some(t2e, _, _) -> e2', t2, e1', t2e
           | _ ->
               E.s (error
                      "Expecting a pointer type in index:@! t1=%a@!t2=%a@!"
@@ -3633,9 +3635,10 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
         in
         (* We have to distinguish the construction based on the type of e1'' *)
         let res =
-          match e1'' with
-            StartOf array -> (* A real array indexing operation *)
+          match e1'', vectorInfo t1 with
+            StartOf array, _ -> (* A real array indexing operation *)
               addOffsetLval (Index(e2'', NoOffset)) array
+          | Lval lv, Some _ -> addOffsetLval (Index(e2'', NoOffset)) lv
           | _ -> (* Turn into *(e1 + e2) *)
               mkMem ~addr:(BinOp(IndexPI, e1'', e2'', t1)) ~off:NoOffset
         in
