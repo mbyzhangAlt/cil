@@ -81,12 +81,6 @@ typedef int bool;
 #define VERSION_MAJOR __GNUC__
 #define VERSION_MINOR __GNUC_MINOR__
 
-#ifdef UNDERSCORE_NAME_DEF
-#define UNDERSCORE_NAME "true"
-#else
-#define UNDERSCORE_NAME "false"
-#endif
-
 #ifdef HAVE_FLOAT16_DEF
 #define HAVE_FLOAT16 "true"
 #else
@@ -341,7 +335,7 @@ int main(int argc, char **argv)
 	     "bool=%d,%d fun=%d,%d alignof_string=%d max_alignment=%d size_t=%s "
 	     "wchar_t=%s char16_t=%s char32_t=%s char_signed=%s "
 	     "big_endian=%s __thread_is_keyword=%s __builtin_va_list=%s "
-	     "underscore_name=%s have_float16=%s\n",
+	     "have_float16=%s\n",
 	     (int)sizeof(short), alignof_short, (int)sizeof(int), alignof_int,
 	     (int)sizeof(long), alignof_long, (int)sizeof(long long), alignof_longlong,
 	     (int)sizeof(int *), alignof_ptr,
@@ -374,7 +368,7 @@ int main(int argc, char **argv)
 	     underscore(TYPE_SIZE_T), underscore(TYPE_WCHAR_T), underscore(TYPE_CHAR16_T), underscore(TYPE_CHAR32_T),
 	     char_is_unsigned ? "false" : "true",
 	     little_endian ? "false" : "true",
-	     THREAD_IS_KEYWORD, HAVE_BUILTIN_VA_LIST, UNDERSCORE_NAME, HAVE_FLOAT16);
+	     THREAD_IS_KEYWORD, HAVE_BUILTIN_VA_LIST, HAVE_FLOAT16);
     }
   else
     {
@@ -457,7 +451,6 @@ int main(int argc, char **argv)
       printf("\t alignof_fun                = %d;\n", alignof_fun);
       printf("\t alignof_aligned            = %d;\n", alignof_aligned);
       printf("\t char_is_unsigned           = %s;\n", char_is_unsigned ? "true" : "false");
-      printf("\t underscore_name            = %s;\n", UNDERSCORE_NAME);
       printf("\t __builtin_va_list          = %s;\n", HAVE_BUILTIN_VA_LIST);
       printf("\t __thread_is_keyword        = %s;\n", THREAD_IS_KEYWORD);
       printf("\t little_endian              = %s;\n", little_endian ? "true" : "false");
