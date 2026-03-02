@@ -221,7 +221,7 @@ let init_lexicon _ =
       ("__builtin_offsetof", fun loc -> BUILTIN_OFFSETOF loc);
       (* On some versions of GCC __thread is a regular identifier *)
       ("__thread", fun loc ->
-                      if !Machdep.theMachine.Machdep.__thread_is_keyword then
+                      if !Model.theModel.misc.thread_is_keyword then
                          THREAD loc
                        else
                          IDENT ("__thread", loc));
@@ -286,6 +286,7 @@ let init ~(filename: string) : Lexing.lexbuf =
   Lexerhack.push_context := push_context;
   Lexerhack.pop_context := pop_context;
   Lexerhack.add_identifier := add_identifier;
+  H.clear builtin_macro_defs;
   E.startParsing filename
 
 let initFromString (s: string) : Lexing.lexbuf =
@@ -298,6 +299,7 @@ let initFromString (s: string) : Lexing.lexbuf =
   Lexerhack.push_context := push_context;
   Lexerhack.pop_context := pop_context;
   Lexerhack.add_identifier := add_identifier;
+  H.clear builtin_macro_defs;
   E.startParsingFromString s
 
 
@@ -688,6 +690,9 @@ and file lineno =  parse
 |	blank			{addWhite lexbuf; file lineno lexbuf}
 |	'"' ([^ '\012' '\t' '"']* as filename) '"' ((' ' ['1' -'4'])* as flags)
        { addWhite lexbuf;  (* '"' *)
+         if filename <> "<built-in>" && (currentLoc ()).filename = "<built-in>" && !Model.modelSource = MMacroDefs then begin
+           Model.initModelFromMacroDefs builtin_macro_defs
+         end;
          E.setCurrent ~file:(Some (filename, String.contains flags '3')) ~line:lineno;
 				 endline lexbuf}
 
