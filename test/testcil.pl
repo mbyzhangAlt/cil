@@ -327,6 +327,7 @@ addTest("testrun/localinit ");
 addTest("testrun/unary-plus-promotion");
 
 addTest('testrun/longBlock', '');
+addTest('testrun/modelConsistency', '');
 addTest("testrun/perror");
 addTest("testrun/perror1");
 addTest("test/pure");
