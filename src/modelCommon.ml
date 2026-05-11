@@ -14,6 +14,7 @@ type basictyp =
   | Float32x (* _Float32x *)
   | Float64x (* _Float64x *)
   | Float128 (* _Float128 *)
+  | Bf16 (* __bf16 *)
   | Void
   | Fun
   | Str
@@ -47,6 +48,7 @@ let metaOfBasicType (t: basictyp): basictypemeta =
   | Float32x -> {c_type = Some "_Float32x"; optional = true}
   | Float64x -> {c_type = Some "_Float64x"; optional = true}
   | Float128 -> {c_type = Some "_Float128"; optional = true}
+  | Bf16 -> {c_type = Some "__bf16"; optional = true}
   | Void -> {c_type = Some "void"; optional = false}
   | Fun -> {c_type = None; optional = false}
   | Str -> {c_type = None; optional = false}

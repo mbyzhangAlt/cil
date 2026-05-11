@@ -12,6 +12,7 @@ type basictyp =
   | Float32x (* _Float32x *)
   | Float64x (* _Float64x *)
   | Float128 (* _Float128 *)
+  | Bf16 (* __bf16 *)
   | Void
   | Fun
   | Str

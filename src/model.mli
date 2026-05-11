@@ -5,6 +5,7 @@ val theModel : model ref
 
 val sizeOf : basictyp -> int
 val alignOf : basictyp -> int
+val typeExists : basictyp -> bool
 
 val initModelFromMacroDefs : (string, string) H.t -> unit
 
