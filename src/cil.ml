@@ -3248,6 +3248,28 @@ let initGccBuiltins () : unit =
   H.add h "__builtin_va_arg_pack_len" (intType, [ ], false);
   ()
 
+let initClangBuiltins () : unit =
+  if not !cilInitialized then
+    E.s (bug "Call initCIL before initClangBuiltins");
+  let h = builtinFunctions in
+  let sizeType = !typeOfSizeOf in
+
+  (* Clang atomics *)
+  H.add h "__c11_atomic_thread_fence" (voidType, [intType], false);
+  H.add h "__c11_atomic_signal_fence" (voidType, [intType], false);
+  H.add h "__c11_atomic_is_lock_free" (boolType, [sizeType], false);
+  H.add h "__c11_atomic_compare_exchange_strong" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_compare_exchange_weak" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_exchange" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_fetch_add" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_fetch_and" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_fetch_or" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_fetch_sub" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_fetch_xor" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_load" (TVoid[Attr("overloaded",[])], [ ], true);
+  H.add h "__c11_atomic_store" (TVoid[Attr("overloaded",[])], [ ], true);
+
+  ()
 
 (** This is used as the location of the prototypes of builtin functions. *)
 let builtinLoc: location = { line = 1;
@@ -6904,7 +6926,9 @@ let initFromModel () =
   (*     nextCompinfoKey := 1; *)
 
     cilInitialized := true;
-    initGccBuiltins ()
+    initGccBuiltins ();
+    if Option.is_some !M.theModel.clang_ver then
+      initClangBuiltins ()
   end
 
 
