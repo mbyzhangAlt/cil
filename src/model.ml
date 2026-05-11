@@ -32,9 +32,15 @@ let typeInfoFromMacroDefs (md: (string, string) H.t) (t: basictyp) (gcc_ver: com
   let essential (sizeof_macro: string) (alignof_f: int -> int): basictypinfo option = 
     let sizeof_t = intValOfMacro md sizeof_macro in
     Some { sizeof = sizeof_t; alignof = alignof_f sizeof_t } in
-  let optional (existent_checking_macro: string) (sizeof: int) (alignof: int): basictypinfo option =
-    if macroExists md existent_checking_macro then Some { sizeof; alignof } else None in
   let fixed (sizeof: int) (alignof: int): basictypinfo option = Some { sizeof; alignof } in
+  let float (bits: int): basictypinfo option =
+    let ident = "__FLT" ^ string_of_int bits ^ "_MAX__" in
+    if not (macroExists md ident) then None else match bits with
+    | 16 -> Some { sizeof = 2; alignof = alignof_generic 2 }
+    | 32 -> Some { sizeof = 4; alignof = alignof_generic 4 }
+    | 64 -> Some { sizeof = 8; alignof = alignof_generic 8 }
+    | 128 -> Some { sizeof = 16; alignof = alignof_generic 16 }
+    | _ -> E.s (E.bug "Unexpected float type with %d bits" bits) in
   let float_info ?(x: bool = false) (ident: int): (int * int * int) option =
     let s = string_of_int ident ^ (if x then "X" else "") in
     if not (macroExists md ("__FLT" ^ s ^ "_MANT_DIG__")) then
@@ -100,10 +106,12 @@ let typeInfoFromMacroDefs (md: (string, string) H.t) (t: basictyp) (gcc_ver: com
   | Float -> essential "__SIZEOF_FLOAT__" alignof_generic
   | Double -> essential "__SIZEOF_DOUBLE__" alignof_generic
   | LongDouble -> essential "__SIZEOF_LONG_DOUBLE__" alignof_generic
-  | Float16 -> optional "__FLT16_MAX__" 2 2
+  | Float16 -> float 16
+  | Float32 -> float 32
+  | Float64 -> float 64
+  | Float128 -> float 128
   | Float32x -> floatx 32
   | Float64x -> floatx 64
-  | Float128 -> optional "__FLT128_MAX__" 16 16
   | Bf16 -> clang_bf16 ()
   | Void -> fixed 1 1
   | Fun -> fixed 1 (if is_clang (* clang uses 4-byte alignment for function pointers *) || not (is_i386 || is_x86_64) then 4 else 1)

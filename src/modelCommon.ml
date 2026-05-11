@@ -11,9 +11,11 @@ type basictyp =
   | Double
   | LongDouble
   | Float16 (* _Float16 *)
+  | Float32 (* _Float32 *)
+  | Float64 (* _Float64 *)
+  | Float128 (* _Float128 *)
   | Float32x (* _Float32x *)
   | Float64x (* _Float64x *)
-  | Float128 (* _Float128 *)
   | Bf16 (* __bf16 *)
   | Void
   | Fun
@@ -45,9 +47,11 @@ let metaOfBasicType (t: basictyp): basictypemeta =
   | Double -> {c_type = Some "double"; optional = false}
   | LongDouble -> {c_type = Some "long double"; optional = false}
   | Float16 -> {c_type = Some "_Float16"; optional = true}
+  | Float32 -> {c_type = Some "_Float32"; optional = true}
+  | Float64 -> {c_type = Some "_Float64"; optional = true}
+  | Float128 -> {c_type = Some "_Float128"; optional = true}
   | Float32x -> {c_type = Some "_Float32x"; optional = true}
   | Float64x -> {c_type = Some "_Float64x"; optional = true}
-  | Float128 -> {c_type = Some "_Float128"; optional = true}
   | Bf16 -> {c_type = Some "__bf16"; optional = true}
   | Void -> {c_type = Some "void"; optional = false}
   | Fun -> {c_type = None; optional = false}

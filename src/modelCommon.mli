@@ -9,9 +9,11 @@ type basictyp =
   | Double
   | LongDouble
   | Float16 (* _Float16 *)
+  | Float32 (* _Float32 *)
+  | Float64 (* _Float64 *)
+  | Float128 (* _Float128 *)
   | Float32x (* _Float32x *)
   | Float64x (* _Float64x *)
-  | Float128 (* _Float128 *)
   | Bf16 (* __bf16 *)
   | Void
   | Fun
