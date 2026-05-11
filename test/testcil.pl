@@ -279,6 +279,7 @@ addBadComment("test/globals2", "Bug. we print array size expressions that refer 
 addTest("testrun/float");
 addTest("testrun/float2 ");
 addTest("test/float3 ");
+addTest("test/float4 ");
 addTest("test/huff1");
 addTest("testrun/init");
 addTest("testrun/init1");
