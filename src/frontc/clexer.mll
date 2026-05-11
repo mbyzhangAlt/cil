@@ -46,6 +46,7 @@ open Pretty
 exception InternalError of string
 module E = Errormsg
 module H = Hashtbl
+module M = Model
 
 let matchingParsOpen = ref 0
 
@@ -146,6 +147,7 @@ let init_lexicon _ =
       ("_Float32x", fun loc -> FLOAT32X loc);
       ("_Float64x", fun loc -> FLOAT64X loc);
       ("_Float16", fun loc -> FLOAT16 loc);
+      ("__bf16", fun loc -> if M.typeExists Bf16 then BF16 loc else IDENT ("__bf16", loc));
       ("double", fun loc -> DOUBLE loc);
       ("void", fun loc -> VOID loc);
       ("enum", fun loc -> ENUM loc);

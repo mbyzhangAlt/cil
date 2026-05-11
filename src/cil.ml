@@ -304,6 +304,7 @@ and fkind =
   | FLongDouble         (** [long double] *)
   | FFloat128           (** [float128] *)
   | FFloat16            (** [_Float16] *)
+  | FBf16               (** [__bf16] *)
   | FComplexFloat       (** [float _Complex] *)
   | FComplexDouble      (** [double _Complex] *)
   | FComplexLongDouble  (** [long double _Complex]*)
@@ -1668,6 +1669,7 @@ let typeOfRealAndImagComponents t =
       | FLongDouble -> FLongDouble (* [long double] *)
       | FFloat128 -> FFloat128
       | FFloat16 -> FFloat16
+      | FBf16 -> FBf16
       | FComplexFloat -> FFloat
       | FComplexDouble -> FDouble
       | FComplexLongDouble -> FLongDouble
@@ -1684,6 +1686,7 @@ let getComplexFkind = function
   | FLongDouble -> FComplexLongDouble
   | FFloat128 -> FComplexFloat128
   | FFloat16 -> FComplexFloat16
+  | FBf16 -> E.s (E.unimp "complex type for __bf16 is not supported")
   | FComplexFloat -> FComplexFloat
   | FComplexDouble -> FComplexDouble
   | FComplexLongDouble -> FComplexLongDouble
@@ -1762,6 +1765,7 @@ let d_fkind () = function
   | FLongDouble -> text "long double"
   | FFloat128 -> text "_Float128"
   | FFloat16 -> text "_Float16"
+  | FBf16 -> text "__bf16"
   | FComplexFloat -> text "_Complex float"
   | FComplexDouble -> text "_Complex double"
   | FComplexLongDouble -> text "_Complex long double"
@@ -1864,6 +1868,7 @@ let d_const () c =
        | FLongDouble -> chr 'L'
        | FFloat128 -> text "F128"
        | FFloat16 -> text "F16"
+       | FBf16 -> nil (* Clang doesn't define a suffix for __bf16 *)
        | FComplexFloat -> text "iF"
        | FComplexDouble -> chr 'i'
        | FComplexLongDouble -> text "iL"
@@ -2119,6 +2124,7 @@ let floatKindForSize (s:int) =
   else if s = M.sizeOf LongDouble then FLongDouble
   else if s = M.sizeOf Float128 then FFloat128
   else if s = M.sizeOf Float16 then FFloat16
+  else if s = M.sizeOf Bf16 then FBf16
   else raise Not_found
 
 (* Represents an integer as for a given kind.  Returns a flag saying
@@ -2279,6 +2285,7 @@ let rec alignOf_int t =
     | TFloat(FLongDouble, _) -> M.alignOf LongDouble
     | TFloat(FFloat128, _) -> M.alignOf Float128
     | TFloat(FFloat16, _) -> M.alignOf Float16
+    | TFloat(FBf16, _) -> M.alignOf Bf16
     | TFloat(FComplexFloat, _) -> M.alignOf Float
     | TFloat(FComplexDouble, _) -> M.alignOf Double
     | TFloat(FComplexLongDouble, _) -> M.alignOf LongDouble
@@ -2440,6 +2447,7 @@ and bitsSizeOf t =
   | TFloat(FLongDouble, _) -> 8 * M.sizeOf LongDouble
   | TFloat(FFloat128, _) -> 8 * M.sizeOf Float128
   | TFloat(FFloat16, _) -> 8 * M.sizeOf Float16
+  | TFloat(FBf16, _) -> 8 * M.sizeOf Bf16
   | TFloat(FFloat, _) -> 8 * M.sizeOf Float
   | TFloat(FComplexDouble, _) ->  8 * M.sizeOf Double * 2
   | TFloat(FComplexLongDouble, _) -> 8 * M.sizeOf LongDouble * 2
