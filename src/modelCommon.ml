@@ -109,4 +109,5 @@ type model = {
   typeinfo: (basictyp, basictypinfo) H.t [@to_yojson hashtbl_to_yojson basictyp_to_string basictypinfo_to_yojson] [@of_yojson hashtbl_of_yojson basictyp_of_string basictypinfo_of_yojson];
   misc: modelmisc;
   gcc_ver: compilerver;
+  clang_ver: compilerver option;
 } [@@deriving yojson]

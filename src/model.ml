@@ -89,11 +89,12 @@ let modelFromMacroDefs (md: (string, string) H.t): model =
   if not (macroExists md "__STDC__") then
     E.s (E.error "Macro definitions not detected. Have you called cc with -Wp,-dD?\n");
   let gcc_ver = cver (intValOfMacro md "__GNUC__") (intValOfMacro md "__GNUC_MINOR__") (intValOfMacro md "__GNUC_PATCHLEVEL__") in
+  let clang_ver = if macroExists md "__clang__" then Some (cver (intValOfMacro md "__clang_major__") (intValOfMacro md "__clang_minor__") (intValOfMacro md "__clang_patchlevel__")) else None in
   let misc = modelMiscFromMacroDefs md gcc_ver in
   let typeinfo = H.create 16 in
   let all_typeinfos = List.map (fun t -> (t, typeInfoFromMacroDefs md t)) allBasicTyps in
   List.iter (fun (t, info) -> match info with Some x -> H.add typeinfo t x | None -> ()) all_typeinfos;
-  { typeinfo; misc; gcc_ver }
+  { typeinfo; misc; gcc_ver; clang_ver }
 
 let uninitModel: model = {
   typeinfo = H.create 0;
@@ -108,6 +109,7 @@ let uninitModel: model = {
     wchar_type = "";
   };
   gcc_ver = cver 0 0 0;
+  clang_ver = None;
 }
 
 let gcc10x64Model: model = {
@@ -141,7 +143,8 @@ let gcc10x64Model: model = {
     wchar_type = "int";
   };
   
-  gcc_ver = cver 10 5 0
+  gcc_ver = cver 10 5 0;
+  clang_ver = None;
 }
 
 let theModel: model ref = ref uninitModel

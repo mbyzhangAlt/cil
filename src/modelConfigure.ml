@@ -274,6 +274,26 @@ let gccVerGen = {
     });
 }
 
+let clangVerGen = {
+  gen = {
+    test_gen = (fun () -> []);
+    prog_gen = (fun () -> [
+        { ident = "is_clang"; pre_cond = Some "__clang__"; pre_stmt = None; expr = "1"; ty = Int };
+        { ident = "clang_major"; pre_cond = Some "__clang__"; pre_stmt = None; expr = "__clang_major__"; ty = Int };
+        { ident = "clang_minor"; pre_cond = Some "__clang__"; pre_stmt = None; expr = "__clang_minor__"; ty = Int };
+        { ident = "clang_patch"; pre_cond = Some "__clang__"; pre_stmt = None; expr = "__clang_patchlevel__"; ty = Int };
+      ]);
+  };
+  parse = (fun tbl -> 
+    if H.find tbl "is_clang" |> unwrapIntVal > 0 then
+      Some {
+        MC.major = H.find tbl "clang_major" |> unwrapIntVal;
+        minor = H.find tbl "clang_minor" |> unwrapIntVal;
+        patch = H.find tbl "clang_patch" |> unwrapIntVal;
+      }
+    else None
+  );
+}
 
 let generateModel (c: C.t) (cc: string) (c_flags: string list): MC.model = 
   let allGens: gen list = [
@@ -287,6 +307,7 @@ let generateModel (c: C.t) (cc: string) (c_flags: string list): MC.model =
     sizeTypeGen.gen;
     wcharTypeGen.gen;
     gccVerGen.gen;
+    clangVerGen.gen;
   ] in
   let all_tests = allGens |> List.concat_map (fun g -> g.test_gen ()) in
   let header = testAndGenerateHeader c cc ~c_flags all_tests in
@@ -308,5 +329,6 @@ let generateModel (c: C.t) (cc: string) (c_flags: string list): MC.model =
       wchar_type = wcharTypeGen.parse out;
     };
     gcc_ver = gccVerGen.parse out;
+    clang_ver = clangVerGen.parse out;
   }
 

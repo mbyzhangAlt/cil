@@ -50,6 +50,7 @@ type model = {
   typeinfo: (basictyp, basictypinfo) Hashtbl.t;
   misc: modelmisc;
   gcc_ver: compilerver;
+  clang_ver: compilerver option;
 }
 
 val allBasicTyps : basictyp list
