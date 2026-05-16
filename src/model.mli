@@ -13,3 +13,5 @@ type modelsrc =
 | MFixed of model (* model specified by the user via CIL_MACHINE environment variable *)
 
 val modelSource : modelsrc ref
+
+val gcc10x64Model : model
