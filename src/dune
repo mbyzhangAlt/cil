@@ -22,6 +22,13 @@
  (libraries yojson dune-configurator modelCommon)
 )
 
+(library
+ (public_name goblint-cil.mainFeature)
+ (name mainFeature)
+ (modules mainFeature)
+ (libraries goblint-cil dynlink findlib str zarith)
+)
+
 ; for Cilly.pm
 (executable
  (name modelConfigureMain)
@@ -51,9 +58,9 @@
 
 (executable
  (name main)
- (modules main mainFeature ciloptions)
+ (modules main ciloptions)
  (modes native)
- (libraries goblint-cil dynlink findlib yojson ppx_deriving_yojson.runtime modelCommon)
+ (libraries goblint-cil dynlink findlib yojson ppx_deriving_yojson.runtime modelCommon mainFeature)
  (flags :standard -linkall))
 
 (env
