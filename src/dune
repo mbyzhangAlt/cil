@@ -9,6 +9,13 @@
 )
 
 (library
+ (public_name goblint-cil.mainFeature)
+ (name mainFeature)
+ (modules mainFeature)
+ (libraries goblint-cil dynlink findlib str zarith)
+)
+
+(library
  (name modelConfigure)
  (package goblint-cil)
  (modules modelConfigure)
@@ -44,9 +51,9 @@
 
 (executable
  (name main)
- (modules main mainFeature ciloptions)
+ (modules main ciloptions)
  (modes native)
- (libraries goblint-cil dynlink findlib yojson ppx_deriving_yojson.runtime)
+ (libraries goblint-cil dynlink findlib yojson ppx_deriving_yojson.runtime mainFeature)
  (flags :standard -linkall))
 
 (env
